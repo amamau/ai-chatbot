@@ -1,0 +1,37 @@
+--- a/web_app.py
++++ b/web_app.py
+@@ -887,7 +887,9 @@
+     });
+   };
+ 
+-  window.fetchJSON = window.fetchJSON || async function fetchJSON(url, opts = {}) {
++  // IMPORTANT: always set the CSRF-aware helper.
++  // Some pages previously defined a fetchJSON without CSRF; using "||" would keep the broken one.
++  window.fetchJSON = async function fetchJSON(url, opts = {}) {
+     function getCookie(name) {
+       const m = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/[.$?*|{}()\[\]\\/+^]/g, '\$&') + '=([^;]*)'));
+       return m ? decodeURIComponent(m[1]) : '';
+@@ -896,10 +898,22 @@
+     const headers = Object.assign({ "Accept": "application/json" }, (opts.headers || {}));
+     const method = String(opts.method || "GET").toUpperCase();
+ 
+-    // CSRF: double-submit via X-CSRF-Token header
++    // CSRF: double-submit via X-CSRF-Token header (and optional JSON body field as a fallback)
+     if (!["GET", "HEAD", "OPTIONS"].includes(method)) {
+       const csrf = getCookie('csrf_token');
+       if (csrf && !headers['X-CSRF-Token']) headers['X-CSRF-Token'] = csrf;
++
++      // Fallback: if the server ever reads CSRF from JSON body, inject it.
++      try {
++        const ct = String(headers["Content-Type"] || headers["content-type"] || "").toLowerCase();
++        if (csrf && ct.includes("application/json") && typeof opts.body === "string") {
++          const obj = JSON.parse(opts.body);
++          if (obj && typeof obj === "object" && !("csrf" in obj)) {
++            obj.csrf = csrf;
++            opts.body = JSON.stringify(obj);
++          }
++        }
++      } catch (e) {}
+     }
+ 
+     const res = await fetch(url, Object.assign({ credentials: "same-origin", headers }, opts));

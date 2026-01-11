@@ -1,0 +1,5 @@
+cd ~/amamau/ai-chatbot
+source venv/bin/activate
+python -m py_compile web_app.py
+sudo systemctl restart ai-chatbot
+sudo journalctl -u ai-chatbot -f

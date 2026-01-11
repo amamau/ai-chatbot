@@ -1,0 +1,81 @@
+--- a/workspaces.py
++++ b/workspaces.py
+@@ -399,6 +399,78 @@
+     return None
+ 
+ 
++def list_pending_invites(workspace_id: str, path: Optional[Path] = None) -> List[Dict[str, Any]]:
++    """Return non-expired, non-used invites for a workspace (owner view)."""
++    wsid = str(workspace_id or '').strip()
++    if not wsid:
++        return []
++    store = _load_store(path)
++    _cleanup_expired_invites(store)
++    now = datetime.utcnow().replace(tzinfo=timezone.utc)
++    out = []
++    for inv in store.get('invites', []) or []:
++        if str(inv.get('workspace_id') or '') != wsid:
++            continue
++        if bool(inv.get('used')):
++            continue
++        exp = str(inv.get('expires_at') or '')
++        try:
++            exp_dt = datetime.fromisoformat(exp.replace('Z', '+00:00'))
++        except Exception:
++            continue
++        if exp_dt <= now:
++            continue
++        out.append(inv)
++    # soonest-expiring first
++    def _key(i):
++        try:
++            return datetime.fromisoformat(str(i.get('expires_at') or '').replace('Z', '+00:00'))
++        except Exception:
++            return now
++    out.sort(key=_key)
++    return out
++
++
++def revoke_invite(token: str, actor_user_id: str, path: Optional[Path] = None) -> bool:
++    """Revoke a pending invite (owner only)."""
++    tok = str(token or '').strip()
++    uid = str(actor_user_id or '').strip()
++    if not tok or not uid:
++        return False
++
++    store = _load_store(path)
++    _cleanup_expired_invites(store)
++
++    inv = None
++    for it in store.get('invites', []) or []:
++        if str(it.get('token') or '') == tok:
++            inv = it
++            break
++    if not inv:
++        return False
++
++    # must be workspace owner
++    wsid = str(inv.get('workspace_id') or '').strip()
++    ws = _find_ws(store, wsid)
++    if not ws:
++        return False
++    if str(ws.get('owner_user_id') or '') != uid:
++        return False
++
++    if bool(inv.get('used')):
++        return False
++
++    inv['used'] = True
++    inv['used_at'] = _now_utc_iso()
++    inv['accepted_by_user_id'] = 'revoked'
++    inv['accepted_by_email'] = None
++    inv['revoked_by_user_id'] = uid
++    inv['revoked_at'] = _now_utc_iso()
++
++    _save_store(store, path)
++    return True
++
++
+ def accept_invite(token: str, user_id: str, user_email: str, path: Optional[Path] = None) -> str:
+     store = _load_store(path)
+     _cleanup_expired_invites(store)

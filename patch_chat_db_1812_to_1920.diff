@@ -1,0 +1,76 @@
+--- a/chat_db.py
++++ b/chat_db.py
+@@ -1062,6 +1062,73 @@
+         conn.close()
+ 
+ 
++
++
++def ws_get_project(workspace_id: str, project_id: str):
++    wsid = (workspace_id or "").strip()
++    pid = (project_id or "").strip()
++    if not wsid or not pid:
++        return None
++
++    conn = _connect()
++    try:
++        _migrate_schema(conn)
++        row = conn.execute(
++            """
++            SELECT id, workspace_id, name, description, created_by_email, created_at, updated_at, archived, deleted, deleted_at
++            FROM projects
++            WHERE id=? AND workspace_id=?
++            """,
++            (pid, wsid),
++        ).fetchone()
++        if not row:
++            return None
++        return {k: row[k] for k in row.keys()}
++    finally:
++        conn.close()
++
++
++def ws_update_project(workspace_id: str, project_id: str, name: str = '', description: str = '') -> bool:
++    wsid = (workspace_id or "").strip()
++    pid = (project_id or "").strip()
++    if not wsid or not pid:
++        return False
++
++    # allow empty description, but not empty name if provided
++    name = (name or '').strip()
++    description = (description or '').strip()
++
++    now = _utc_now_iso()
++    conn = _connect()
++    try:
++        _migrate_schema(conn)
++        # ensure exists and not deleted
++        row = conn.execute(
++            "SELECT id FROM projects WHERE id=? AND workspace_id=? AND deleted=0",
++            (pid, wsid),
++        ).fetchone()
++        if not row:
++            return False
++
++        sets = []
++        params = []
++        if name:
++            sets.append('name=?')
++            params.append(name)
++        sets.append('description=?')
++        params.append(description or None)
++        sets.append('updated_at=?')
++        params.append(now)
++        params += [pid, wsid]
++
++        sql = 'UPDATE projects SET ' + ', '.join(sets) + ' WHERE id=? AND workspace_id=? AND deleted=0'
++        cur = conn.execute(sql, tuple(params))
++        conn.commit()
++        return cur.rowcount > 0
++    finally:
++        conn.close()
++
++
+ def ws_set_project_archived(workspace_id: str, project_id: str, archived: bool) -> bool:
+     wsid = (workspace_id or "").strip()
+     pid = (project_id or "").strip()

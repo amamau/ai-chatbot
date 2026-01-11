@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>amamau Insight AI — Business assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description"
+        content="amamau Insight AI is a private, business-focused assistant for small teams and founders building serious products." />
+
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+  <link rel="icon" href="/static/mark-amamau-white.svg" type="image/svg+xml" />
+
+  <style>
+    :root {
+      --bg-page: #f5f5f7;
+      --bg-card: #ffffff;
+      --bg-soft: #fafafa;
+
+      --border-subtle: #e2e2e7;
+      --border-strong: #c7c7cf;
+
+      --text-main: #111118;
+      --text-soft: #4e4e58;
+      --text-mute: #8f8f99;
+
+      --accent: #111111;
+      --accent-soft: #151515;
+
+      --radius-lg: 26px;
+      --radius-md: 18px;
+      --radius-pill: 999px;
+
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.04);
+      --shadow-card: 0 14px 36px rgba(0, 0, 0, 0.08);
+
+      --transition: 0.22s ease-out;
+      --content-width: 1120px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      font-family: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+      min-height: 100vh;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .shell {
+      max-width: var(--content-width);
+      margin: 0 auto;
+      padding: 0 1.4rem 3.5rem;
+      width: 100%;
+    }
+
+    @media (min-width: 960px) {
+      .shell {
+        padding: 0 2rem 4rem;
+      }
+    }
+
+    /* NAVBAR */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(18px);
+      background: rgba(245, 245, 247, 0.96);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .nav-inner {
+      max-width: var(--content-width);
+      margin: 0 auto;
+      padding: 0.65rem 1.4rem 0.65rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    @media (min-width: 960px) {
+      .nav-inner {
+        padding: 0.75rem 2rem 0.75rem;
+      }
+    }
+
+    .logo {
+      height: 26px;
+      display: block;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .logo {
+        height: 30px;
+      }
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    nav a {
+      position: relative;
+      color: var(--text-soft);
+      text-decoration: none;
+      font-size: 0.86rem;
+      font-weight: 500;
+      padding-bottom: 0.15rem;
+      transition: color var(--transition);
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--accent);
+      transition: width var(--transition);
+    }
+
+    nav a:hover::after,
+    nav a:focus-visible::after {
+      width: 100%;
+    }
+
+    nav a:hover,
+    nav a:focus-visible {
+      color: var(--accent);
+      outline: none;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .user-chip {
+      font-size: 0.82rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.04);
+      color: var(--text-soft);
+      display: none;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .user-chip span.user-name {
+      font-weight: 500;
+      color: var(--accent);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.72rem 1.4rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      text-decoration: none;
+      cursor: pointer;
+      user-select: none;
+      transition: background var(--transition),
+                  color var(--transition),
+                  border-color var(--transition),
+                  box-shadow var(--transition),
+                  transform var(--transition);
+      background: transparent;
+    }
+
+    .btn-primary {
+      background: #111111;
+      color: #ffffff;
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    .btn-ghost {
+      background: #ffffff;
+      color: var(--text-soft);
+      border-color: #d7d7dd;
+    }
+
+    .btn-ghost:hover {
+      color: var(--accent);
+      border-color: var(--border-strong);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .btn-small {
+      padding: 0.5rem 1rem;
+      font-size: 0.76rem;
+    }
+
+    .btn-text {
+      padding: 0;
+      border: none;
+      box-shadow: none;
+      text-transform: none;
+      letter-spacing: 0.02em;
+      font-weight: 500;
+      color: var(--text-soft);
+    }
+
+    .btn-text:hover {
+      color: var(--accent);
+      transform: none;
+      box-shadow: none;
+      background: transparent;
+    }
+
+    main {
+      background: #f5f5f7;
+      flex: 1;
+    }
+
+    /* HERO */
+    .hero-wrap {
+      padding: 3.2rem 0 2.8rem;
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      gap: 2.2rem;
+    }
+
+    @media (min-width: 960px) {
+      .hero-wrap {
+        padding: 4rem 0 3.4rem;
+      }
+      .hero {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 3.2rem;
+      }
+      .hero-main,
+      .hero-side {
+        flex: 1;
+      }
+    }
+
+    .hero-eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      font-size: 0.78rem;
+      color: var(--text-mute);
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-title {
+      font-size: 2.2rem;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title span {
+      color: var(--text-soft);
+    }
+
+    @media (min-width: 768px) {
+      .hero-title {
+        font-size: 2.7rem;
+      }
+    }
+
+    .hero-sub {
+      font-size: 0.98rem;
+      color: var(--text-soft);
+      line-height: 1.8;
+      max-width: 560px;
+    }
+
+    .hero-sub strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .hero-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 1rem;
+      margin-top: 1.3rem;
+      font-size: 0.83rem;
+      color: var(--text-mute);
+    }
+
+    .hero-actions {
+      margin-top: 1.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    .hero-side {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-card);
+      padding: 1.6rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      min-height: 320px;
+    }
+
+    @media (min-width: 960px) {
+      .hero-side {
+        padding: 1.9rem 1.8rem;
+      }
+    }
+
+    .hero-side-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero-side-eyebrow {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-mute);
+    }
+
+    .hero-side-status {
+      font-size: 0.78rem;
+      color: var(--text-mute);
+    }
+
+    .hero-side-title {
+      font-size: 1.06rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .hero-side-sub {
+      font-size: 0.88rem;
+      color: var(--text-soft);
+      margin-bottom: 0.8rem;
+      line-height: 1.6;
+    }
+
+    /* LOGIN CARD */
+    .login-step {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 0.4rem;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      font-size: 0.86rem;
+    }
+
+    .field label {
+      color: var(--text-soft);
+    }
+
+    .field input {
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      padding: 0.6rem 0.9rem;
+      font-size: 0.86rem;
+      outline: none;
+      background: #fafafa;
+      transition: border-color var(--transition), background var(--transition),
+                  box-shadow var(--transition);
+    }
+
+    .field input:focus {
+      border-color: #111111;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px #11111120;
+    }
+
+    .field-hint {
+      font-size: 0.78rem;
+      color: var(--text-mute);
+    }
+
+    .form-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      margin-top: 0.9rem;
+    }
+
+    .error-text {
+      font-size: 0.78rem;
+      color: #b00020;
+      margin-top: 0.2rem;
+      min-height: 1em;
+    }
+
+    .success-text {
+      font-size: 0.78rem;
+      color: #146c2e;
+      margin-top: 0.2rem;
+      min-height: 1em;
+    }
+
+    .badge-soft {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+      background: #f1f1f5;
+      border: 1px solid #e2e2ea;
+      font-size: 0.76rem;
+      color: var(--text-mute);
+    }
+
+    /* CHAT CARD */
+    .chat-wrapper {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 260px;
+    }
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.8rem;
+      gap: 0.6rem;
+    }
+
+    .chat-header-title {
+      font-size: 0.98rem;
+      font-weight: 500;
+    }
+
+    .chat-header-meta {
+      font-size: 0.78rem;
+      color: var(--text-mute);
+      text-align: right;
+    }
+
+    .chat-thread {
+      flex: 1;
+      border-radius: 18px;
+      border: 1px solid #e2e2eb;
+      background: #fafafa;
+      padding: 0.75rem 0.8rem;
+      overflow-y: auto;
+      max-height: 260px;
+      font-size: 0.86rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .chat-empty {
+      font-size: 0.8rem;
+      color: var(--text-mute);
+    }
+
+    .chat-bubble {
+      display: inline-block;
+      max-width: 100%;
+      padding: 0.55rem 0.75rem;
+      border-radius: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .chat-row {
+      display: flex;
+    }
+
+    .chat-row.user {
+      justify-content: flex-end;
+    }
+
+    .chat-row.assistant {
+      justify-content: flex-start;
+    }
+
+    .chat-bubble.user {
+      background: #111111;
+      color: #ffffff;
+    }
+
+    .chat-bubble.assistant {
+      background: #ffffff;
+      color: var(--text-soft);
+      border: 1px solid #e2e2ea;
+    }
+
+    .chat-input-row {
+      margin-top: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .chat-input-row textarea {
+      flex: 1;
+      border-radius: 16px;
+      border: 1px solid var(--border-subtle);
+      padding: 0.6rem 0.75rem;
+      font-size: 0.86rem;
+      min-height: 46px;
+      max-height: 90px;
+      resize: vertical;
+      background: #fafafa;
+      outline: none;
+      transition: border-color var(--transition), background var(--transition),
+                  box-shadow var(--transition);
+    }
+
+    .chat-input-row textarea:focus {
+      border-color: #111111;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px #11111120;
+    }
+
+    .chat-input-row button {
+      white-space: nowrap;
+    }
+
+    .chat-footer-note {
+      margin-top: 0.4rem;
+      font-size: 0.76rem;
+      color: var(--text-mute);
+    }
+
+    /* SECTION BASE */
+    .section {
+      margin-top: 3rem;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 2.1rem 1.7rem;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+    }
+
+    @media (min-width: 768px) {
+      .section {
+        margin-top: 3.3rem;
+        padding: 2.3rem 2.2rem;
+      }
+    }
+
+    .section-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .tagline {
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      font-size: 0.78rem;
+      color: var(--text-mute);
+      margin-bottom: 0.4rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.25rem;
+    }
+
+    .section-sub {
+      font-size: 0.93rem;
+      color: var(--text-soft);
+      max-width: 560px;
+      line-height: 1.7;
+    }
+
+    /* ACCOUNT SECTION */
+    .account-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+      gap: 1.8rem;
+    }
+
+    @media (max-width: 880px) {
+      .account-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .account-box {
+      border-radius: var(--radius-md);
+      background: var(--bg-soft);
+      padding: 1.4rem 1.3rem;
+      border: 1px solid #e2e2ea;
+      font-size: 0.9rem;
+      color: var(--text-soft);
+    }
+
+    .account-box h3 {
+      font-size: 1rem;
+      margin-bottom: 0.4rem;
+      color: var(--text-main);
+    }
+
+    .account-meta {
+      font-size: 0.83rem;
+      color: var(--text-mute);
+      margin-bottom: 0.8rem;
+    }
+
+    .account-box .field {
+      margin-bottom: 0.75rem;
+    }
+
+    .account-box .btn-small {
+      margin-top: 0.4rem;
+    }
+
+    .account-inline {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      margin-bottom: 0.5rem;
+    }
+
+    .account-inline span {
+      font-weight: 500;
+      color: var(--accent);
+    }
+
+    .account-section-note {
+      font-size: 0.82rem;
+      color: var(--text-mute);
+      margin-top: 0.5rem;
+    }
+
+    .two-fields-inline {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .two-fields-inline .field {
+      flex: 1;
+    }
+
+    .otp-subform {
+      margin-top: 0.7rem;
+      padding-top: 0.7rem;
+      border-top: 1px dashed #d0d0dd;
+    }
+
+    /* FOOTER */
+    footer {
+      margin-top: 3.2rem;
+      padding-top: 2.1rem;
+      border-top: 1px solid #dfdfe6;
+    }
+
+    .footer-bottom {
+      font-size: 0.8rem;
+      color: var(--text-mute);
+      text-align: center;
+    }
+
+    /* UTIL */
+    .hidden {
+      display: none !important;
+    }
+
+    .pill-soft {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.15rem 0.65rem;
+      border-radius: 999px;
+      background: #eeeeff;
+      border: 1px solid #deddf7;
+      font-size: 0.75rem;
+      color: #303065;
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-inner">
+      <a href="/">
+        <img src="/static/logo-amamau.svg" alt="amamau logo" class="logo" />
+      </a>
+      <div class="nav-right">
+        <div class="user-chip" id="nav-user-chip">
+          <span>Ciao</span>
+          <span class="user-name" id="nav-user-name">—</span>
+        </div>
+        <button class="btn btn-primary btn-small" id="nav-login-btn">
+          Access beta
+        </button>
+        <button class="btn btn-text btn-small hidden" id="nav-logout-btn">
+          Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <div class="shell">
+      <!-- HERO -->
+      <section class="hero-wrap">
+        <div class="hero">
+          <div class="hero-main">
+            <div class="hero-eyebrow">amamau • insight ai surface</div>
+            <h1 class="hero-title">
+              A business-first AI that<br>
+              doesn’t drift off&nbsp;<span>into noise</span>.
+            </h1>
+            <p class="hero-sub">
+              amamau Insight AI is a <strong>private assistant</strong> tuned for
+              founders, small teams and DTC brands. It remembers your profiles,
+              pricing rules and constraints, and stays on brief instead of
+              hallucinating side projects.
+            </p>
+            <div class="hero-meta-row">
+              <span>Profile-based memory</span>
+              <span>Pricing &amp; margin logic</span>
+              <span>Brand &amp; DTC focus</span>
+              <span>Europe-first mindset</span>
+            </div>
+            <div class="hero-actions">
+              <button class="btn btn-primary" id="hero-start-btn">
+                Start a session
+              </button>
+              <a class="btn btn-ghost"
+                 href="mailto:hello@amamau.com?subject=amamau%20Insight%20AI%20beta">
+                Request beta access
+              </a>
+            </div>
+          </div>
+
+          <!-- SIDE CARD: LOGIN / CHAT -->
+          <aside class="hero-side">
+            <div class="hero-side-header">
+              <div>
+                <div class="hero-side-eyebrow">Insight AI console</div>
+                <div class="hero-side-title" id="card-title">
+                  Private beta console
+                </div>
+              </div>
+              <div class="hero-side-status">
+                <span class="badge-soft">
+                  • Private beta
+                </span>
+              </div>
+            </div>
+
+            <!-- LOGIN STATE -->
+            <div id="card-login" class="">
+              <!-- STEP 1: EMAIL + PASSWORD -->
+              <div id="login-step-credentials" class="login-step">
+                <div class="hero-side-sub">
+                  Accesso riservato. Usa le credenziali fornite da amamau per
+                  entrare e collegarti al tuo profilo business.
+                </div>
+
+                <form id="login-form" class="login-step">
+                  <div class="field">
+                    <label for="login-email">Work email</label>
+                    <input type="email" id="login-email" autocomplete="email" required />
+                  </div>
+                  <div class="field">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" autocomplete="current-password" required />
+                    <div class="field-hint">
+                      Dopo la password ti invieremo un codice OTP per confermare l’accesso.
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <button type="submit" class="btn btn-primary btn-small" id="login-submit-btn">
+                      Continue
+                    </button>
+                    <div class="field-hint">
+                      Nessun magic link pubblico, solo accessi verificati.
+                    </div>
+                  </div>
+                  <div class="error-text" id="login-error"></div>
+                  <div class="success-text" id="login-success"></div>
+                </form>
+              </div>
+
+              <!-- STEP 2: OTP -->
+              <div id="login-step-otp" class="login-step hidden">
+                <div class="hero-side-sub">
+                  Abbiamo inviato un codice di conferma all’indirizzo
+                  <span id="otp-email-label" class="pill-soft"></span>.
+                  Inseriscilo qui sotto per completare l’accesso.
+                </div>
+                <form id="otp-form" class="login-step">
+                  <div class="field">
+                    <label for="otp-code">Codice OTP</label>
+                    <input type="text" id="otp-code" inputmode="numeric" autocomplete="one-time-code" required />
+                    <div class="field-hint">
+                      Valido per circa 10 minuti. Niente app esterne, solo email.
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <button type="submit" class="btn btn-primary btn-small" id="otp-submit-btn">
+                      Verify &amp; enter
+                    </button>
+                    <button type="button" class="btn btn-text btn-small" id="otp-back-btn">
+                      Torna indietro
+                    </button>
+                  </div>
+                  <div class="error-text" id="otp-error"></div>
+                  <div class="success-text" id="otp-success"></div>
+                </form>
+              </div>
+            </div>
+
+            <!-- LOGGED-IN CHAT STATE -->
+            <div id="card-chat" class="chat-wrapper hidden">
+              <div class="chat-header">
+                <div>
+                  <div class="chat-header-title">
+                    Ciao, <span id="chat-user-name">Founder</span>.
+                  </div>
+                  <div class="hero-side-sub" style="margin-bottom:0;">
+                    This surface is tuned for business: strategy, pricing, DTC,
+                    SaaS, funnels. It will not drift into generic trivia.
+                  </div>
+                </div>
+                <div class="chat-header-meta">
+                  <div>Profile: <span id="chat-profile-id">—</span></div>
+                  <button id="go-account-btn" class="btn btn-text btn-small">
+                    Personal area
+                  </button>
+                </div>
+              </div>
+
+              <div class="chat-thread" id="chat-thread">
+                <div class="chat-empty" id="chat-empty">
+                  Start with something concrete, e.g.:<br>
+                  “I’m launching a DTC brand with €400/month marketing. How do I
+                  prioritise the first 30 days?”
+                </div>
+              </div>
+
+              <form id="chat-form" class="chat-input-row">
+                <textarea id="chat-input" placeholder="Ask something about your business, pricing, DTC, SaaS…"
+                          rows="2"></textarea>
+                <button type="submit" class="btn btn-primary btn-small" id="chat-send-btn">
+                  Send
+                </button>
+              </form>
+              <div class="chat-footer-note">
+                The assistant has memory at profile level. No external browsing,
+                no public data scraping.
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ACCOUNT / PERSONAL AREA (ONLY WHEN LOGGED IN) -->
+      <section id="account-section" class="section hidden">
+        <div class="section-header">
+          <div class="tagline">Account &amp; profile</div>
+          <h2 class="section-title">Personal area for this Insight AI seat.</h2>
+          <p class="section-sub">
+            Update your name and linked business profile, or change email and
+            password with a second confirmation step (password + OTP).
+          </p>
+        </div>
+
+        <div class="account-grid">
+          <!-- Profile -->
+          <div class="account-box">
+            <h3>Profile basics</h3>
+            <div class="account-meta">
+              These details control how the console greets you and which
+              business profile the AI loads by default.
+            </div>
+
+            <div class="account-inline">
+              Current email: <span id="account-email-label">—</span>
+            </div>
+
+            <form id="profile-form">
+              <div class="field">
+                <label for="profile-name">Display name</label>
+                <input type="text" id="profile-name" />
+              </div>
+              <div class="field">
+                <label for="profile-id">Business profile id</label>
+                <input type="text" id="profile-id" />
+                <div class="field-hint">
+                  Must match an existing business profile (es. <code>thita</code>, <code>amamau</code>…).
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-small" id="profile-save-btn">
+                Save profile
+              </button>
+              <div class="success-text" id="profile-success"></div>
+              <div class="error-text" id="profile-error"></div>
+            </form>
+
+            <div class="account-section-note">
+              Profile changes take effect on the next request. If something
+              looks off, reload the page.
+            </div>
+          </div>
+
+          <!-- Security -->
+          <div class="account-box">
+            <h3>Security</h3>
+            <div class="account-meta">
+              Sensitive changes require your current password and a one-time
+              code sent by email.
+            </div>
+
+            <!-- Email change -->
+            <form id="email-change-form">
+              <div class="field">
+                <label for="email-change-current-password">Current password</label>
+                <input type="password" id="email-change-current-password" autocomplete="current-password" />
+              </div>
+              <div class="field">
+                <label for="email-change-new-email">New email</label>
+                <input type="email" id="email-change-new-email" autocomplete="email" />
+              </div>
+              <button type="submit" class="btn btn-ghost btn-small" id="email-change-request-btn">
+                Request email change
+              </button>
+              <div class="success-text" id="email-change-success"></div>
+              <div class="error-text" id="email-change-error"></div>
+            </form>
+
+            <div class="otp-subform">
+              <form id="email-change-otp-form">
+                <div class="field">
+                  <label for="email-change-otp">Confirm with OTP</label>
+                  <input type="text" id="email-change-otp" inputmode="numeric" />
+                  <div class="field-hint">
+                    Check your <strong>new</strong> inbox for the confirmation code.
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-small" id="email-change-otp-btn">
+                  Confirm email change
+                </button>
+                <div class="success-text" id="email-change-otp-success"></div>
+                <div class="error-text" id="email-change-otp-error"></div>
+              </form>
+            </div>
+
+            <hr style="border:none;border-top:1px dashed #d0d0dd;margin:1rem 0;">
+
+            <!-- Password change -->
+            <form id="password-change-form">
+              <div class="field">
+                <label for="password-current">Current password</label>
+                <input type="password" id="password-current" autocomplete="current-password" />
+              </div>
+              <div class="two-fields-inline">
+                <div class="field">
+                  <label for="password-new">New password</label>
+                  <input type="password" id="password-new" autocomplete="new-password" />
+                </div>
+                <div class="field">
+                  <label for="password-new-repeat">Repeat new password</label>
+                  <input type="password" id="password-new-repeat" autocomplete="new-password" />
+                </div>
+              </div>
+              <button type="submit" class="btn btn-ghost btn-small" id="password-change-request-btn">
+                Request password change
+              </button>
+              <div class="success-text" id="password-change-success"></div>
+              <div class="error-text" id="password-change-error"></div>
+            </form>
+
+            <div class="otp-subform">
+              <form id="password-change-otp-form">
+                <div class="field">
+                  <label for="password-change-otp">Confirm with OTP</label>
+                  <input type="text" id="password-change-otp" inputmode="numeric" />
+                  <div class="field-hint">
+                    We send the code to your current email.
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-small" id="password-change-otp-btn">
+                  Confirm password change
+                </button>
+                <div class="success-text" id="password-change-otp-success"></div>
+                <div class="error-text" id="password-change-otp-error"></div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <div class="footer-bottom">
+          © 2025 amamau — Insight AI console (private beta).
+        </div>
+      </footer>
+    </div>
+  </main>
+
+  <script>
+    // --- GLOBAL STATE ---
+    const state = {
+      user: null,
+      loginEmail: null,
+      isChatBusy: false,
+    };
+
+    // --- DOM HELPERS ---
+    function $(id) { return document.getElementById(id); }
+
+    function show(el) { el.classList.remove('hidden'); }
+    function hide(el) { el.classList.add('hidden'); }
+
+    function setText(id, value) {
+      const el = $(id);
+      if (el) el.textContent = value ?? '';
+    }
+
+    function setError(id, msg) {
+      const el = $(id);
+      if (el) el.textContent = msg || '';
+    }
+
+    function setSuccess(id, msg) {
+      const el = $(id);
+      if (el) el.textContent = msg || '';
+    }
+
+    // --- UI STATE SWITCH ---
+    function applyLoggedOutUI() {
+      state.user = null;
+
+      hide($('card-chat'));
+      show($('card-login'));
+      show($('login-step-credentials'));
+      hide($('login-step-otp'));
+
+      show($('nav-login-btn'));
+      hide($('nav-logout-btn'));
+      hide($('nav-user-chip'));
+
+      hide($('account-section'));
+
+      setText('card-title', 'Private beta console');
+      setText('chat-user-name', 'Founder');
+      setText('chat-profile-id', '—');
+
+      $('login-form').reset();
+      $('otp-form').reset();
+      $('chat-thread').innerHTML =
+        '<div class="chat-empty" id="chat-empty">Start with something concrete, e.g.:<br>' +
+        '“I’m launching a DTC brand with €400/month marketing. How do I prioritise the first 30 days?”</div>';
+
+      setError('login-error', '');
+      setSuccess('login-success', '');
+      setError('otp-error', '');
+      setSuccess('otp-success', '');
+    }
+
+    function applyLoggedInUI() {
+      if (!state.user) {
+        applyLoggedOutUI();
+        return;
+      }
+
+      hide($('card-login'));
+      show($('card-chat'));
+      show($('account-section'));
+      hide($('login-step-otp'));
+      show($('nav-logout-btn'));
+      hide($('nav-login-btn'));
+
+      const chip = $('nav-user-chip');
+      if (chip) {
+        show(chip);
+        setText('nav-user-name', state.user.name || 'Founder');
+      }
+
+      setText('chat-user-name', state.user.name || 'Founder');
+      setText('chat-profile-id', state.user.profile_id || '—');
+      setText('card-title', 'Active business session');
+
+      // account section defaults
+      setText('account-email-label', state.user.email || '—');
+      $('profile-name').value = state.user.name || '';
+      $('profile-id').value = state.user.profile_id || '';
+
+      setSuccess('profile-success', '');
+      setError('profile-error', '');
+      setSuccess('email-change-success', '');
+      setError('email-change-error', '');
+      setSuccess('email-change-otp-success', '');
+      setError('email-change-otp-error', '');
+      setSuccess('password-change-success', '');
+      setError('password-change-error', '');
+      setSuccess('password-change-otp-success', '');
+      setError('password-change-otp-error', '');
+    }
+
+    // --- API HELPERS ---
+    async function apiGet(path) {
+      const res = await fetch(path, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      if (!res.ok) {
+        throw new Error('HTTP ' + res.status);
+      }
+      return res.json();
+    }
+
+    async function apiPost(path, body) {
+      const res = await fetch(path, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body || {})
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const msg = (data && data.detail) ? data.detail : ('HTTP ' + res.status);
+        throw new Error(msg);
+      }
+      return data;
+    }
+
+    async function refreshSession() {
+      try {
+        const me = await apiGet('/auth/me');
+        state.user = me;
+        applyLoggedInUI();
+      } catch (_) {
+        applyLoggedOutUI();
+      }
+    }
+
+    // --- LOGIN FLOW ---
+    function setupLoginFlow() {
+      const loginForm = $('login-form');
+      const otpForm = $('otp-form');
+      const navLogin = $('nav-login-btn');
+      const heroStart = $('hero-start-btn');
+      const otpBack = $('otp-back-btn');
+
+      function goToLogin() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        hide($('login-step-otp'));
+        show($('login-step-credentials'));
+        setError('login-error', '');
+        setSuccess('login-success', '');
+        setError('otp-error', '');
+        setSuccess('otp-success', '');
+        $('login-email').focus();
+      }
+
+      navLogin?.addEventListener('click', goToLogin);
+      heroStart?.addEventListener('click', goToLogin);
+
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        setError('login-error', '');
+        setSuccess('login-success', '');
+        setError('otp-error', '');
+        setSuccess('otp-success', '');
+
+        const email = $('login-email').value.trim();
+        const password = $('login-password').value;
+
+        if (!email || !password) {
+          setError('login-error', 'Inserisci email e password.');
+          return;
+        }
+
+        $('login-submit-btn').disabled = true;
+        $('login-submit-btn').textContent = 'Sending OTP…';
+
+        try {
+          await apiPost('/auth/login', { email, password });
+          state.loginEmail = email;
+          setSuccess('login-success', 'OTP inviato. Controlla la casella di posta.');
+          setText('otp-email-label', email);
+          hide($('login-step-credentials'));
+          show($('login-step-otp'));
+          $('otp-code').focus();
+        } catch (err) {
+          setError('login-error', err.message || 'Errore di accesso.');
+        } finally {
+          $('login-submit-btn').disabled = false;
+          $('login-submit-btn').textContent = 'Continue';
+        }
+      });
+
+      otpForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        setError('otp-error', '');
+        setSuccess('otp-success', '');
+
+        const otp = $('otp-code').value.trim();
+        if (!otp || !state.loginEmail) {
+          setError('otp-error', 'Codice non valido o sessione login scaduta.');
+          return;
+        }
+
+        $('otp-submit-btn').disabled = true;
+        $('otp-submit-btn').textContent = 'Verifying…';
+
+        try {
+          await apiPost('/auth/verify-otp', {
+            email: state.loginEmail,
+            otp
+          });
+          setSuccess('otp-success', 'Accesso completato.');
+          state.loginEmail = null;
+          $('otp-code').value = '';
+          await refreshSession();
+        } catch (err) {
+          setError('otp-error', err.message || 'Errore nella verifica.');
+        } finally {
+          $('otp-submit-btn').disabled = false;
+          $('otp-submit-btn').textContent = 'Verify & enter';
+        }
+      });
+
+      otpBack?.addEventListener('click', () => {
+        hide($('login-step-otp'));
+        show($('login-step-credentials'));
+      });
+    }
+
+    // --- LOGOUT ---
+    function setupLogout() {
+      const btn = $('nav-logout-btn');
+      if (!btn) return;
+      btn.addEventListener('click', async () => {
+        try {
+          await apiPost('/auth/logout', {});
+        } catch (_) {}
+        applyLoggedOutUI();
+      });
+    }
+
+    // --- CHAT ---
+    function appendMessage(role, text) {
+      const thread = $('chat-thread');
+      if (!thread) return;
+      const empty = $('chat-empty');
+      if (empty) empty.remove();
+
+      const row = document.createElement('div');
+      row.className = 'chat-row ' + (role === 'user' ? 'user' : 'assistant');
+
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble ' + (role === 'user' ? 'user' : 'assistant');
+      bubble.textContent = text;
+
+      row.appendChild(bubble);
+      thread.appendChild(row);
+      thread.scrollTop = thread.scrollHeight;
+      return bubble;
+    }
+
+    function typeWriter(bubble, fullText) {
+      let idx = 0;
+      const step = () => {
+        idx += 2; // 2 chars per frame
+        bubble.textContent = fullText.slice(0, idx);
+        if (idx < fullText.length) {
+          requestAnimationFrame(step);
+        }
+      };
+      step();
+    }
+
+    function setupChat() {
+      const form = $('chat-form');
+      const input = $('chat-input');
+      const sendBtn = $('chat-send-btn');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (state.isChatBusy) return;
+        const msg = input.value.trim();
+        if (!msg) return;
+        if (!state.user) {
+          alert('Sessione scaduta: accedi di nuovo.');
+          applyLoggedOutUI();
+          return;
+        }
+
+        state.isChatBusy = true;
+        sendBtn.disabled = true;
+        sendBtn.textContent = 'Thinking…';
+
+        appendMessage('user', msg);
+        input.value = '';
+
+        const assistantBubble = appendMessage('assistant', '…');
+
+        try {
+          const data = await apiPost('/api/chat', { message: msg });
+          const reply = data.assistant_reply || '';
+          assistantBubble.textContent = '';
+          typeWriter(assistantBubble, reply);
+        } catch (err) {
+          assistantBubble.textContent = 'Error: ' + (err.message || 'could not reach the assistant.');
+        } finally {
+          state.isChatBusy = false;
+          sendBtn.disabled = false;
+          sendBtn.textContent = 'Send';
+        }
+      });
+    }
+
+    // --- ACCOUNT / PERSONAL AREA ---
+    function setupAccountForms() {
+      // profile
+      $('profile-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        setSuccess('profile-success', '');
+        setError('profile-error', '');
+
+        const name = $('profile-name').value.trim();
+        const profileId = $('profile-id').value.trim();
+
+        try {
+          const data = await apiPost('/account/profile', {
+            name,
+            profile_id: profileId
+          });
+          setSuccess('profile-success', 'Profile updated.');
+          // refresh local state
+          state.user.name = data.name;
+          state.user.profile_id = data.profile_id;
+          applyLoggedInUI();
+        } catch (err) {
+          setError('profile-error', err.message || 'Error updating profile.');
+        }
+      });
+
+      // email change request
+      $('email-change-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        setSuccess('email-change-success', '');
+        setError('email-change-error', '');
+        setSuccess('email-change-otp-success', '');
+        setError('email-change-otp-error', '');
+
+        const currentPassword = $('email-change-current-password').value;
+        const newEmail = $('email-change-new-email').value.trim();
+
+        if (!currentPassword || !newEmail) {
+          setError('email-change-error', 'Insert current password and new email.');
+          return;
+        }
+
+        $('email-change-request-btn').disabled = true;
+        $('email-change-request-btn').textContent = 'Sending OTP…';
+
+        try {
+          await apiPost('/account/request-email-change', {
+            current_password: currentPassword,
+            new_email: newEmail
+          });
+          setSuccess('email-change-success', 'OTP sent to the new email.');
+        } catch (err) {
+          setError('email-change-error', err.message || 'Error requesting email change.');
+        } finally {
+          $('email-change-request-btn').disabled = false;
+          $('email-change-request-btn').textContent = 'Request email change';
+        }
+      });
+
+      // email change confirm
+      $('email-change-otp-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        setSuccess('email-change-otp-success', '');
+        setError('email-change-otp-error', '');
+
+        const otp = $('email-change-otp').value.trim();
+        if (!otp) {
+          setError('email-change-otp-error', 'Insert the confirmation code.');
+          return;
+        }
+
+        $('email-change-otp-btn').disabled = true;
+        $('email-change-otp-btn').textContent = 'Confirming…';
+
+        try {
+          const data = await apiPost('/account/confirm-email-change', { otp });
+          setSuccess('email-change-otp-success', 'Email updated to ' + (data.email || '') + '.');
+          state.user.email = data.email;
+          applyLoggedInUI();
+        } catch (err) {
+          setError('email-change-otp-error', err.message || 'Error confirming email change.');
+        } finally {
+          $('email-change-otp-btn').disabled = false;
+          $('email-change-otp-btn').textContent = 'Confirm email change';
+        }
+      });
+
+      // password change request
+      $('password-change-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        setSuccess('password-change-success', '');
+        setError('password-change-error', '');
+        setSuccess('password-change-otp-success', '');
+        setError('password-change-otp-error', '');
+
+        const currentPassword = $('password-current').value;
+        const newPassword = $('password-new').value;
+        const newRepeat = $('password-new-repeat').value;
+
+        if (!currentPassword || !newPassword || !newRepeat) {
+          setError('password-change-error', 'Fill all password fields.');
+          return;
+        }
+
+        $('password-change-request-btn').disabled = true;
+        $('password-change-request-btn').textContent = 'Sending OTP…';
+
+        try {
+          await apiPost('/account/request-password-change', {
+            current_password: currentPassword,
+            new_password: newPassword,
+            confirm_new_password: newRepeat
+          });
+          setSuccess('password-change-success', 'OTP sent to your current email.');
+        } catch (err) {
+          setError('password-change-error', err.message || 'Error requesting password change.');
+        } finally {
+          $('password-change-request-btn').disabled = false;
+          $('password-change-request-btn').textContent = 'Request password change';
+        }
+      });
+
+      // password change confirm
+      $('password-change-otp-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        setSuccess('password-change-otp-success', '');
+        setError('password-change-otp-error', '');
+
+        const otp = $('password-change-otp').value.trim();
+        if (!otp) {
+          setError('password-change-otp-error', 'Insert the confirmation code.');
+          return;
+        }
+
+        $('password-change-otp-btn').disabled = true;
+        $('password-change-otp-btn').textContent = 'Confirming…';
+
+        try {
+          await apiPost('/account/confirm-password-change', { otp });
+          setSuccess('password-change-otp-success', 'Password updated.');
+          $('password-current').value = '';
+          $('password-new').value = '';
+          $('password-new-repeat').value = '';
+        } catch (err) {
+          setError('password-change-otp-error', err.message || 'Error confirming password change.');
+        } finally {
+          $('password-change-otp-btn').disabled = false;
+          $('password-change-otp-btn').textContent = 'Confirm password change';
+        }
+      });
+
+      // small helper: from chat header to account section
+      $('go-account-btn').addEventListener('click', () => {
+        const rect = $('account-section').getBoundingClientRect();
+        const offset = window.pageYOffset + rect.top - 90;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+      });
+    }
+
+    // --- INIT ---
+    document.addEventListener('DOMContentLoaded', () => {
+      setupLoginFlow();
+      setupLogout();
+      setupChat();
+      setupAccountForms();
+      refreshSession();
+    });
+  </script>
+</body>
+</html>
